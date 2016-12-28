@@ -1,4 +1,5 @@
 #include "checksum.h"
+#include "packet.h"
 
 uint16_t ones_checksum (char* packet_bytes, int len)
 {
@@ -29,11 +30,10 @@ uint16_t ones_checksum (char* packet_bytes, int len)
 
 char check_checksum (char* packet_bytes, int len);
 {
-	uint16_t transmitted_checksum = packet_bytes[0] << 8;
-	transmitted_checksum |= packet_bytes[1];
+	struct packet_hdr* header = (struct packet_hdr*)packet_bytes;
+	uint16_t transmitted_checksum = header->checksum;
 
-	packet_bytes[0] = 0;
-	packet_bytes[1] = 0;
+	header->checksum = 0;
 
 	return ones_checksum(packet_bytes) == transmitted_checksum;
 }
