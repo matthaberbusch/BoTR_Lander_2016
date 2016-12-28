@@ -13,8 +13,6 @@ def ones_checksum (packet_bytes)
 			checksum = checksum & 0xFFFF
 			checksum += 1
 
-
-
 	checksum = ~checksum
 
 	return checksum
