@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "irq.h"
 #include "rdt.h"
@@ -9,7 +10,7 @@ char to_send[1024];
 int send_data_len;
 char has_unack_data;
 
-char recv_data[1024];
+char to_recv[1024];
 char recv_data_buf[1024];
 int recv_data_len;
 char recv_new_data;
@@ -38,7 +39,7 @@ void recv_cycle (void)
 	struct packet_hdr* packet_header = (struct packet_hdr*)buf;
 	struct packet_hdr ack_packet;
 
-	recv_function(buf, MAX_PACK_SIZE);
+	recv_function(buf, MAX_PACK_SIZE, recv_timeout);
 
 	if (!check_checksum(buf, packet_header->len))
 		return;
@@ -59,7 +60,7 @@ void recv_cycle (void)
 		if (packet_header->seq_num == recv_seq)
 		{
 			recv_data_len = packet_header->len;
-			memcpy (recv_data, buf, recv_data_len);
+			memcpy (to_recv, buf, recv_data_len);
 			recv_new_data = 1;
 
 			recv_seq++;
@@ -69,8 +70,8 @@ void recv_cycle (void)
 		ack_packet.len = sizeof(struct packet_hdr);
 		ack_packet.type = PACK_ACK;
 		ack_packet.seq_num = recv_seq-1;
-		ack_packet.checksum = ones_checksum (&ack_packet, sizeof(struct packet_hdr));
-		send_function (&ack_packet, sizeof(struct packet_hdr));
+		ack_packet.checksum = ones_checksum ((char*)&ack_packet, sizeof(struct packet_hdr));
+		send_function ((char*)&ack_packet, sizeof(struct packet_hdr));
 	}
 }
 
@@ -84,7 +85,7 @@ void send_cycle (void)
 
 char* recv_data (void)
 {
-	struct packet_hdr* recv_header = (struct packet_hdr*)recv_data;
+	struct packet_hdr* recv_header = (struct packet_hdr*)to_recv;
 
 	disable_timer ();
 
@@ -93,7 +94,7 @@ char* recv_data (void)
 
 	recv_new_data = 0;
 
-	memcpy (recv_data_buf, recv_data + sizeof(struct packet_hdr), recv_data->len - sizeof(struct packet_hdr));
+	memcpy (recv_data_buf, to_recv + sizeof(struct packet_hdr), recv_header->len - sizeof(struct packet_hdr));
 
 	enable_timer ();
 
@@ -109,15 +110,15 @@ void send_data (char* data, int len)
 	if (!can_send)
 		return;
 
-	if (len + sizeof(packet_hdr) > 1024)
+	if (len + sizeof(struct packet_hdr) > 1024)
 		return;
 
 	send_header->checksum = 0;
-	send_header->len = len + sizeof(packet_hdr);
+	send_header->len = len + sizeof(struct packet_hdr);
 	send_header->type = PACK_DAT;
 	send_header->seq_num = send_seq;
 
-	memcpy (to_send + sizeof(packet_hdr), data, len);
+	memcpy (to_send + sizeof(struct packet_hdr), data, len);
 
 	send_header->checksum = ones_checksum (to_send, send_header->len);
 

@@ -28,12 +28,12 @@ uint16_t ones_checksum (char* packet_bytes, int len)
 	return checksum;
 }
 
-char check_checksum (char* packet_bytes, int len);
+char check_checksum (char* packet_bytes, int len)
 {
 	struct packet_hdr* header = (struct packet_hdr*)packet_bytes;
 	uint16_t transmitted_checksum = header->checksum;
 
 	header->checksum = 0;
 
-	return ones_checksum(packet_bytes) == transmitted_checksum;
+	return ones_checksum(packet_bytes, len) == transmitted_checksum;
 }
