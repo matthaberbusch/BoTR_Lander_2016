@@ -1,5 +1,4 @@
-all: test
-test: test1 test2
+all: test1 test2
 test1: checksum.o rdt.o test.o test1.o irq_dummy.o
 	gcc -g checksum.o rdt.o test.o test1.o irq_dummy.o -o test1
 test2: checksum.o rdt.o test.o test2.o irq_dummy.o
@@ -16,3 +15,5 @@ test2.o: test.h rdt.h test2.c
 	gcc -g -c test2.c
 irq_dummy.o: irq.h irq_dummy.c
 	gcc -g -c irq_dummy.c
+clean:
+	rm checksum.o rdt.o test.o test1.o test2.o irq_dummy.o

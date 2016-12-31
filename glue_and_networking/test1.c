@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <sys/socket.h>
-#include <netinet/net.h>
+#include <netinet/ip.h>
+#include <netdb.h>
 #include <string.h>
 
 #include "rdt.h"
@@ -12,7 +13,7 @@ int main (int argc, char** argv)
 	struct sockaddr_in serv_addr;
 	struct sockaddr_in client_addr;
 	socklen_t client_len;
-	int welcome_fd
+	int welcome_fd;
 	char* tmp = NULL;
 
 	welcome_fd = socket (AF_INET, SOCK_STREAM, 0);

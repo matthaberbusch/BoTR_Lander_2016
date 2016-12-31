@@ -18,7 +18,7 @@ char recv_new_data;
 uint8_t send_seq;
 uint8_t recv_seq;
 
-void initialize (void (*__recv_function)(char*, int, int), void (*__send_function)(char*, int), int __recv_timeout, int __send_timeout)
+void initialize (int (*__recv_function)(char*, int, int), void (*__send_function)(char*, int), int __recv_timeout, int __send_timeout)
 {
 	has_unack_data = 0;
 	recv_new_data = 0;

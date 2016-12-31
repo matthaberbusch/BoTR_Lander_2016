@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <sys/socket.h>
-#include <netinet/net.h>
+#include <netinet/ip.h>
+#include <netdb.h>
 #include <string.h>
 
 #include "rdt.h"
@@ -19,7 +20,7 @@ int main (int argc, char** argv)
 	memset (&serv_addr, 0, sizeof (struct sockaddr_in));
 	serv_addr.sin_family = AF_INET;
 	memcpy (&(serv_addr.sin_addr.s_addr), &(server->h_addr), server->h_length);
-	serv_addr.port = htons (PORT);
+	serv_addr.sin_port = htons (PORT);
 
 	connect (socket_fd, (struct sockaddr*)&serv_addr, sizeof (struct sockaddr_in));
 
