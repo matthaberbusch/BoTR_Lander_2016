@@ -38,10 +38,13 @@ void recv_cycle (void)
 	char buf[MAX_PACK_SIZE];
 	struct packet_hdr* packet_header = (struct packet_hdr*)buf;
 	struct packet_hdr ack_packet;
+	int len;
 
-	recv_function(buf, MAX_PACK_SIZE, recv_timeout);
+	len = recv_function(buf, MAX_PACK_SIZE, recv_timeout);
 
-	if (!check_checksum(buf, packet_header->len))
+	if (!len)
+		return;
+	else if (!check_checksum(buf, packet_header->len))
 		return;
 	else if (packet_header->type == PACK_UNK)
 		return;
