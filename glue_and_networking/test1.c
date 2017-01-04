@@ -1,8 +1,11 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/ip.h>
 #include <netdb.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "rdt.h"
 #include "test.h"
@@ -15,6 +18,8 @@ int main (int argc, char** argv)
 	socklen_t client_len;
 	int welcome_fd;
 	char* tmp = NULL;
+
+	srand(time(NULL));
 
 	welcome_fd = socket (AF_INET, SOCK_STREAM, 0);
 
@@ -36,13 +41,15 @@ int main (int argc, char** argv)
 		tmp = recv_data ();
 	}
 
-	printf ("%s", tmp);
+	printf ("%s\n", tmp);
 
 	while (!can_send)
 		dispatch ();
 
 	send_data ("Goodbye world!", strlen ("Goodbye world!") + 1);
 
-	while (1)
+	while (!can_send)
 		dispatch ();
+
+	close (socket_fd);
 }

@@ -3,6 +3,8 @@
 #include <netinet/ip.h>
 #include <netdb.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "rdt.h"
 #include "test.h"
@@ -13,13 +15,15 @@ int main (int argc, char** argv)
 	struct hostent *server;
 	char* tmp = NULL;
 
+	srand(time(NULL));
+
 	socket_fd = socket (AF_INET, SOCK_STREAM, 0);
 
 	server = gethostbyname (argv[1]);
 
 	memset (&serv_addr, 0, sizeof (struct sockaddr_in));
 	serv_addr.sin_family = AF_INET;
-	memcpy (&(serv_addr.sin_addr.s_addr), &(server->h_addr), server->h_length);
+	memcpy (&(serv_addr.sin_addr.s_addr), server->h_addr_list[0], server->h_length);
 	serv_addr.sin_port = htons (PORT);
 
 	connect (socket_fd, (struct sockaddr*)&serv_addr, sizeof (struct sockaddr_in));
@@ -38,7 +42,7 @@ int main (int argc, char** argv)
 		tmp = recv_data ();
 	}
 
-	printf ("%s", tmp);
+	printf ("%s\n", tmp);
 
 	while (1)
 		dispatch ();
