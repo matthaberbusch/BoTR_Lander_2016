@@ -10,12 +10,12 @@ MAX_PACK_SIZE = 1024
 header_format = '<HHBB'
 header_size = 6
 
-def create_packet(to_packetize, packet_type, seq_num)
+def create_packet(to_packetize, packet_type, seq_num):
 	tmp = pack(header_format + str(len(to_packetize)) + 's', 0, len(to_packetize) + header_size, packet_type, seq_num)
 	new_checksum = ones_checksum(tmp)
 	return pack(header_format + str(len(to_packetize)) + 's', new_checksum, len(to_packetize) + header_size, packet_type, seq_num)
 
-def unpack_packet(to_unpack)
+def unpack_packet(to_unpack):
 	length = to_unpack[2] << 8
 	length |= to_unpack[3]
 

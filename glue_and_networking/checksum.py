@@ -1,4 +1,4 @@
-def ones_checksum (packet_bytes)
+def ones_checksum(packet_bytes):
 	checksum = 0
 
 	if len(packet_bytes) % 2 == 1
@@ -17,7 +17,7 @@ def ones_checksum (packet_bytes)
 
 	return checksum
 
-def check_checksum (packet_bytes)
+def check_checksum(packet_bytes):
 	transmitted_checksum = packet_bytes[0] << 8
 	transmitted_checksum |= packet_bytes[1]
 
