@@ -2,7 +2,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "irq.h"
 #include "rdt.h"
 #include "packet.h"
 #include "checksum.h"
@@ -114,8 +113,6 @@ char* recv_data (void)
 {
 	struct packet_hdr* recv_header = (struct packet_hdr*)to_recv;
 
-	disable_timer ();
-
 	if (!recv_new_data)
 		return NULL;
 
@@ -123,16 +120,12 @@ char* recv_data (void)
 
 	memcpy (recv_data_buf, to_recv + sizeof(struct packet_hdr), recv_header->len - sizeof(struct packet_hdr));
 
-	enable_timer ();
-
 	return recv_data_buf;
 }
 
 void send_data (char* data, int len)
 {
 	struct packet_hdr* send_header = (struct packet_hdr*)to_send;
-
-	disable_timer ();
 
 	if (!can_send)
 		return;
@@ -152,17 +145,10 @@ void send_data (char* data, int len)
 
 	has_unack_data = 1;
 	can_send = 0;
-
-	enable_timer ();
 }
 
 void dispatch (void)
 {
-	disable_timer ();
-
 	send_cycle ();
 	recv_cycle ();
-
-	reset_timer ();
-	enable_timer ();
 }
