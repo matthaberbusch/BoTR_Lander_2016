@@ -67,7 +67,7 @@ void recv_cycle (void)
 
 			reset_counter = 0;
 		}
-		else if (packet_header->seq_num = 0)
+		else if (packet_header->seq_num == 0)
 			reset_counter++;
 	}
 	else if (packet_header->type == PACK_DAT)
@@ -82,7 +82,7 @@ void recv_cycle (void)
 
 			reset_counter = 0;
 		}
-		else if (packet_header->seq_num = 0)
+		else if (packet_header->seq_num == 0)
 			reset_counter++;
 
 		ack_packet.checksum = 0;
