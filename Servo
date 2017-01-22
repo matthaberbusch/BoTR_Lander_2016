@@ -1,0 +1,31 @@
+
+// http://www.bajdi.com
+// Rotating a continuous servo (tested with a SpringRC SM-S4306R)
+
+#include <Servo.h> 
+ 
+Servo myservo;  // create servo object to control a servo 
+ 
+void setup() 
+{ 
+  myservo.attach(9);  // attaches the servo on pin 9 to the servo object 
+} 
+ 
+void loop() 
+{ 
+  myservo.write(91);                  // Actual stop -Matt
+  delay(10000);
+  myservo.write(97);                  // rotate clockwise slowly for 20 seconds - Matt
+  delay(20000);                       // I found that at 97, the servo rotates at 195.19 degrees per second - Matt
+  
+//  myservo.write(135);                 // rotate clockwise full speed
+//  delay(2000);
+//  myservo.write(90);                  // stop
+//  delay(100);
+//  myservo.write(80);                  // rotate very slowly counterclockwise
+//  delay(2000);
+//  myservo.write(90);                  // stop
+//  delay(100);
+//  myservo.write(100);                 // rotate very slowly clockwise
+//delay(2000);
+} 
